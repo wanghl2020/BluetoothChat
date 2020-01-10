@@ -462,11 +462,21 @@ public class CFragment extends Fragment {
                         Toast.makeText(activity, "Connected to "
                                 + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
                     }
+                    connectDeviceIndex ++;
+                    if(addresses != null && connectDeviceIndex<addresses.size()){
+                        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(addresses.get(connectDeviceIndex));
+                        mChatService.connect(device, true);
+                    }
                     break;
                 case Constants.MESSAGE_TOAST:
                     if (null != activity) {
                         Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
                                 Toast.LENGTH_SHORT).show();
+                    }
+                    connectDeviceIndex ++;
+                    if(addresses != null && connectDeviceIndex<addresses.size()){
+                        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(addresses.get(connectDeviceIndex));
+                        mChatService.connect(device, true);
                     }
                     break;
             }
@@ -479,6 +489,8 @@ public class CFragment extends Fragment {
                 // When DeviceListActivity returns with a device to connect
                 if (resultCode == Activity.RESULT_OK) {
                     connectDevice(data, true);
+                } else if (resultCode == Constants.RESULT_CONNECT_DEVICES ){
+                    connectDevices(data, true);
                 }
                 break;
             case REQUEST_CONNECT_DEVICE_INSECURE:
@@ -516,6 +528,32 @@ public class CFragment extends Fragment {
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device
         mChatService.connect(device, secure);
+    }
+
+    private ArrayList<String> addresses;
+    private int connectDeviceIndex;
+    /**
+     * Establish connection with other device
+     *
+     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     * @param secure Socket Security type - Secure (true) , Insecure (false)
+     */
+    private void connectDevices(Intent data, boolean secure) {
+        // Get the device MAC address
+        addresses = data.getStringArrayListExtra(Constants.EXTRA_DEVICE_ADDRESSES);
+
+        if(addresses!=null && addresses.size()>0){
+            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(addresses.get(0));
+            mChatService.connect(device, secure);
+            connectDeviceIndex = 0;
+        }
+//        mChatService.connect(device, secure);
+//        for (int i = 0; i < addresses.size(); i++) {
+//            // Get the BluetoothDevice object
+//            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(addresses.get(i));
+//            // Attempt to connect to the device
+//            mChatService.connect(device, secure);
+//        }
     }
 
     private String getLocalBlueDeviceAddress() {

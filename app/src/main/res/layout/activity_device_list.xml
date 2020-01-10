@@ -19,16 +19,42 @@
               android:orientation="vertical"
     >
 
-    <TextView
-        android:id="@+id/title_paired_devices"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#666"
-        android:paddingLeft="5dp"
-        android:text="@string/title_paired_devices"
-        android:textColor="#fff"
-        android:visibility="gone"
-        />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title_paired_devices"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="#666"
+            android:paddingLeft="5dp"
+            android:text="@string/title_paired_devices"
+            android:textColor="#fff"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/btn_start_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="确定"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:layout_marginEnd="10dp"/>
+
+        <Button
+            android:id="@+id/btn_select_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="全选"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"/>
+
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/paired_devices"

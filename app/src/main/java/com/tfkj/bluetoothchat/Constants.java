@@ -52,4 +52,7 @@ public interface Constants {
      * Return Intent extra
      */
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
+    public static String EXTRA_DEVICE_ADDRESSES = "device_addresses";
+
+    public static final int RESULT_CONNECT_DEVICES = 1001;
 }

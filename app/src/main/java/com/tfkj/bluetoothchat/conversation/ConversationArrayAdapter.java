@@ -14,10 +14,6 @@ import com.tfkj.bluetoothchat.bean.MessageBean;
 
 import java.util.ArrayList;
 
-/**
- * Created by fly263 on 2017/7/25.
- */
-
 public class ConversationArrayAdapter extends ArrayAdapter<MessageBean> {
     private ArrayList<MessageBean> messageList;
 

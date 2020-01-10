@@ -35,7 +35,11 @@ import android.widget.TextView;
 
 import com.tfkj.bluetoothchat.Constants;
 import com.tfkj.bluetoothchat.R;
+import com.tfkj.bluetoothchat.bean.MessageBean;
+import com.tfkj.bluetoothchat.bean.SelectDeviceBean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -88,8 +92,8 @@ public class DeviceListActivity extends Activity {
 
         // Initialize array adapters. One for already paired devices and
         // one for newly discovered devices
-        ArrayAdapter<String> pairedDevicesArrayAdapter =
-                new ArrayAdapter<String>(this, R.layout.device_name);
+        final SelectDeviceArrayAdapter pairedDevicesArrayAdapter =
+                new SelectDeviceArrayAdapter(this, R.layout.device_name, new ArrayList<SelectDeviceBean>());
         mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
 
         // Find and set up the ListView for paired devices
@@ -120,12 +124,47 @@ public class DeviceListActivity extends Activity {
         if (pairedDevices.size() > 0) {
             findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
             for (BluetoothDevice device : pairedDevices) {
-                pairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                SelectDeviceBean selectDeviceBean = new SelectDeviceBean();
+                selectDeviceBean.setDeviceName(device.getName());
+                selectDeviceBean.setDeviceAddress(device.getAddress());
+                pairedDevicesArrayAdapter.add(selectDeviceBean);
             }
         } else {
             String noDevices = getResources().getText(R.string.none_paired).toString();
-            pairedDevicesArrayAdapter.add(noDevices);
+            pairedDevicesArrayAdapter.clear();
         }
+
+
+        Button selectAllButton = (Button) findViewById(R.id.btn_select_all);
+        selectAllButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                pairedDevicesArrayAdapter.selectAll();
+            }
+        });
+
+        Button startConnectButton = (Button) findViewById(R.id.btn_start_connect);
+        startConnectButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mBtAdapter.cancelDiscovery();
+
+                // Get the device MAC address, which is the last 17 chars in the View
+
+                List<SelectDeviceBean> data = pairedDevicesArrayAdapter.getData();
+
+                ArrayList<String> macAddresses = new ArrayList<>();
+                for (int i = 0; i < data.size(); i++) {
+                    if(data.get(i).isSelected()) macAddresses.add(data.get(i).getDeviceAddress());
+                }
+
+                // Create the result Intent and include the MAC address
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra(Constants.EXTRA_DEVICE_ADDRESSES, macAddresses);
+
+                // Set result and finish this Activity
+                setResult(Constants.RESULT_CONNECT_DEVICES, intent);
+                finish();
+            }
+        });
     }
 
     @Override

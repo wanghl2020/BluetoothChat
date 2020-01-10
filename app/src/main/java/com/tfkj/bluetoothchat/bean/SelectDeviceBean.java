@@ -1,9 +1,9 @@
 package com.tfkj.bluetoothchat.bean;
 
-public class MessageBean {
+public class SelectDeviceBean {
     private String deviceAddress;
     private String deviceName;
-    private String content;
+    private boolean selected;
 
     public String getDeviceAddress() {
         return deviceAddress;
@@ -21,11 +21,11 @@ public class MessageBean {
         this.deviceName = deviceName;
     }
 
-    public String getContent() {
-        return content;
+    public boolean isSelected() {
+        return selected;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
